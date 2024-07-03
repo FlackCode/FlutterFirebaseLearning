@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebasetest/models/brew.dart';
+import 'package:firebasetest/screens/home/brew_list.dart';
 import 'package:firebasetest/services/auth.dart';
+import 'package:firebasetest/services/database.dart';
+import 'package:firebasetest/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -8,32 +14,54 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.brown[50],
-      appBar: AppBar(
-        title: const Text('Welcome to the app!'),
-        backgroundColor: Colors.brown[400],
-        actions: <Widget>[
-          TextButton.icon(
-            onPressed: () async {
-              await _auth.signOut();
-              print('Signed Out Successfully');
-            },
-            label: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.black),
+    void showSettingsPanel() {
+      showModalBottomSheet(
+          context: context,
+          constraints: const BoxConstraints(minWidth: 700),
+          builder: (context) {
+            return Container(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+              child: const Text('Bottom Sheet'),
+            );
+          });
+    }
+
+    return StreamProvider<List<Brew>?>.value(
+      value: DatabaseService().brews,
+      initialData: null,
+      child: Scaffold(
+          backgroundColor: Colors.brown[50],
+          appBar: AppBar(
+            title: const Text(
+              'Brew Crew',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            icon: const Icon(Icons.person, color: Colors.black),
-          )
-        ],
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-        child: const Text(
-          'Hi',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-      ),
+            backgroundColor: Colors.brown[400],
+            actions: <Widget>[
+              TextButton.icon(
+                onPressed: () async {
+                  await _auth.signOut();
+                },
+                label: const Text(
+                  'Logout',
+                  style: TextStyle(color: Colors.black),
+                ),
+                icon: const Icon(Icons.person, color: Colors.black),
+              ),
+              TextButton.icon(
+                onPressed: showSettingsPanel,
+                label: const Text('Settings',
+                    style: TextStyle(color: Colors.black)),
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.black,
+                ),
+              )
+            ],
+          ),
+          body: const BrewList()),
     );
   }
 }
