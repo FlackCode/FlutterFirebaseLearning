@@ -1,15 +1,15 @@
 import 'package:firebasetest/services/auth.dart';
 import 'package:flutter/material.dart';
 
-class SignIn extends StatefulWidget {
+class Register extends StatefulWidget {
   final Function toggleView;
-  const SignIn({super.key, required this.toggleView});
+  const Register({super.key, required this.toggleView});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
 
   String email = '';
@@ -22,34 +22,25 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
         elevation: 0.0,
-        title: const Text('Sign in to Brew Crew'),
+        title: const Text('Sign up to Brew Crew'),
         actions: [
           TextButton.icon(
             onPressed: () {
               widget.toggleView();
             },
             label: Text(
-              'Register',
+              'Sign In',
               style: TextStyle(color: Colors.black),
             ),
-            icon: Icon(Icons.person, color: Colors.black),
+            icon: Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
           )
         ],
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-        //child: ElevatedButton(
-        //    onPressed: () async {
-        //      dynamic result = await _auth.signInAnon();
-        //      if (result == null) {
-        //        print('Error signing in');
-        //      } else {
-        //        print('Signed in successfully');
-        //        print(result.uid);
-        //      }
-        //    },
-        //    child: Text('Sign in anonymously')),
-        // code for anonymous signin
         child: Form(
             child: Column(
           children: [
@@ -88,7 +79,7 @@ class _SignInState extends State<SignIn> {
                       WidgetStateProperty.all<Color?>(Colors.pink[400]),
                 ),
                 child: const Text(
-                  'Sign In',
+                  'Register',
                   style: TextStyle(color: Colors.white),
                 ))
           ],

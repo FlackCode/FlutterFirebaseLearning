@@ -14,7 +14,8 @@ class AuthService {
 
   Future signInAnon() async {
     try {
-      UserCredential userCredential = await _auth.signInAnonymously(); //AuthResult = UserCredential
+      UserCredential userCredential =
+          await _auth.signInAnonymously(); //AuthResult = UserCredential
       User? user = userCredential.user; //FirebaseUser = User
       return _userFromFirebaseUser(user);
     } on FirebaseAuthException catch (e) {
@@ -25,6 +26,15 @@ class AuthService {
         default:
           print("Unknown error.");
       }
+    }
+  }
+
+  Future signOut() async {
+    try {
+      return await _auth.signOut();
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
   }
 }
