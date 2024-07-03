@@ -1,4 +1,6 @@
 import 'package:firebasetest/services/auth.dart';
+import 'package:firebasetest/shared/constants.dart';
+import 'package:firebasetest/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -16,10 +18,11 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String error = '';
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? const Loading() : Scaffold(
       backgroundColor: Colors.brown[100],
       appBar: AppBar(
         backgroundColor: Colors.brown[400],
@@ -51,6 +54,8 @@ class _RegisterState extends State<Register> {
                   height: 20,
                 ),
                 TextFormField(
+                  decoration:
+                      textInputDecoration.copyWith(hintText: 'Email...'),
                   validator: (value) =>
                       value!.isEmpty ? 'Enter an email' : null,
                   onChanged: (value) {
@@ -63,6 +68,8 @@ class _RegisterState extends State<Register> {
                   height: 20,
                 ),
                 TextFormField(
+                  decoration:
+                      textInputDecoration.copyWith(hintText: 'Password...'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Enter a password';
@@ -85,11 +92,15 @@ class _RegisterState extends State<Register> {
                 ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          loading = true;
+                        });
                         dynamic result = await _auth
                             .registerWithEmailAndPassword(email, password);
                         if (result == null) {
                           setState(() {
                             error = 'Please supply a valid email';
+                            loading = false;
                           });
                         }
                       }
