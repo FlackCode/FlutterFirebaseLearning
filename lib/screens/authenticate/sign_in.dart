@@ -11,9 +11,11 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -51,48 +53,75 @@ class _SignInState extends State<SignIn> {
         //    child: Text('Sign in anonymously')),
         // code for anonymous signin
         child: Form(
+            key: _formKey,
             child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              onChanged: (value) {
-                setState(() {
-                  email = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              obscureText: true,
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  print("$email\n$password");
-                },
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0))),
-                  backgroundColor:
-                      WidgetStateProperty.all<Color?>(Colors.pink[400]),
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-                child: const Text(
-                  'Sign In',
-                  style: TextStyle(color: Colors.white),
-                ))
-          ],
-        )),
+                TextFormField(
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter an email' : null,
+                  onChanged: (value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter a password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters long';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        dynamic result = await _auth.signInWithEmailAndPassword(
+                            email, password);
+                        if (result == null) {
+                          setState(() {
+                            error = 'Could not sign in with those credentials.';
+                          });
+                        }
+                      }
+                    },
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0))),
+                      backgroundColor:
+                          WidgetStateProperty.all<Color?>(Colors.pink[400]),
+                    ),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  error,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                )
+              ],
+            )),
       ),
     );
   }

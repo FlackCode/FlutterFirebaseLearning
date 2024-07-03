@@ -11,9 +11,11 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +30,11 @@ class _RegisterState extends State<Register> {
             onPressed: () {
               widget.toggleView();
             },
-            label: Text(
+            label: const Text(
               'Sign In',
               style: TextStyle(color: Colors.black),
             ),
-            icon: Icon(
+            icon: const Icon(
               Icons.person,
               color: Colors.black,
             ),
@@ -42,48 +44,75 @@ class _RegisterState extends State<Register> {
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
         child: Form(
+            key: _formKey,
             child: Column(
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              onChanged: (value) {
-                setState(() {
-                  email = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            TextFormField(
-              obscureText: true,
-              onChanged: (value) {
-                setState(() {
-                  password = value;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  print("$email\n$password");
-                },
-                style: ButtonStyle(
-                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0))),
-                  backgroundColor:
-                      WidgetStateProperty.all<Color?>(Colors.pink[400]),
+              children: [
+                const SizedBox(
+                  height: 20,
                 ),
-                child: const Text(
-                  'Register',
-                  style: TextStyle(color: Colors.white),
-                ))
-          ],
-        )),
+                TextFormField(
+                  validator: (value) =>
+                      value!.isEmpty ? 'Enter an email' : null,
+                  onChanged: (value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter a password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters long';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (value) {
+                    setState(() {
+                      password = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        dynamic result = await _auth
+                            .registerWithEmailAndPassword(email, password);
+                        if (result == null) {
+                          setState(() {
+                            error = 'Please supply a valid email';
+                          });
+                        }
+                      }
+                    },
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0))),
+                      backgroundColor:
+                          WidgetStateProperty.all<Color?>(Colors.pink[400]),
+                    ),
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  error,
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
+                )
+              ],
+            )),
       ),
     );
   }
