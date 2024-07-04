@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebasetest/models/brew.dart';
 import 'package:firebasetest/screens/home/brew_list.dart';
+import 'package:firebasetest/screens/home/settings_form.dart';
 import 'package:firebasetest/services/auth.dart';
 import 'package:firebasetest/services/database.dart';
 import 'package:firebasetest/shared/loading.dart';
@@ -20,10 +21,9 @@ class Home extends StatelessWidget {
           constraints: const BoxConstraints(minWidth: 700),
           builder: (context) {
             return Container(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: const Text('Bottom Sheet'),
-            );
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 60.0),
+                child: SettingsForm());
           });
     }
 
@@ -46,17 +46,17 @@ class Home extends StatelessWidget {
                 },
                 label: const Text(
                   'Logout',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
-                icon: const Icon(Icons.person, color: Colors.black),
+                icon: const Icon(Icons.person, color: Colors.white),
               ),
               TextButton.icon(
                 onPressed: showSettingsPanel,
                 label: const Text('Settings',
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: Colors.white)),
                 icon: const Icon(
                   Icons.settings,
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               )
             ],
