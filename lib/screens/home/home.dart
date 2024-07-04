@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
             return Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 20.0, horizontal: 60.0),
-                child: SettingsForm());
+                child: const SettingsForm());
           });
     }
 
@@ -61,7 +61,12 @@ class Home extends StatelessWidget {
               )
             ],
           ),
-          body: const BrewList()),
+          body: Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/coffee_bg.png'),
+                      fit: BoxFit.cover)),
+              child: const BrewList())),
     );
   }
 }
